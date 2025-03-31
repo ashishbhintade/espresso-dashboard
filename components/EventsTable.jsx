@@ -1,11 +1,12 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
+import { useRouter } from "next/navigation";
 
-const GraphQLDataTable = ({ data }) => {
+const GraphQLDataTable = ({ data, loading }) => {
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
-    { field: "rollupAddress", headerName: "Rollup Address", width: 400 },
-    { field: "blockTime", headerName: "Block Time", width: 200 },
+    { field: "rollupAddress", headerName: "Rollup Address", width: 450 },
+    { field: "blockTime", headerName: "Block Time", width: 250 },
     { field: "chainId", headerName: "Chain ID", width: 150 },
   ];
 
@@ -77,6 +78,14 @@ const GraphQLDataTable = ({ data }) => {
     return Array.from(transactionsMap.values());
   };
 
+  const router = useRouter();
+
+  const handleRowClick = (params) => {
+    if (params.row.rollupAddress) {
+      router.push(`/rollupaddress/${params.row.rollupAddress}`);
+    }
+  };
+
   const rows = [...extractData(data)];
   rows.pop();
   //   for (let i = 0; i < data.length; i += 2) {
@@ -98,10 +107,11 @@ const GraphQLDataTable = ({ data }) => {
 
   return (
     <div className="flex place-content-center">
-      <Box sx={{ height: "100%", width: { lg: "100%", xl: "70%" } }}>
+      <Box sx={{ height: "500", width: { lg: "100%", xl: "70%" } }}>
         <DataGrid
           rows={rows}
           columns={columns}
+          onRowClick={handleRowClick}
           initialState={{
             pagination: {
               paginationModel: {
@@ -109,10 +119,11 @@ const GraphQLDataTable = ({ data }) => {
               },
             },
           }}
-          pageSizeOptions={[10]}
           disableSelectionOnClick
+          pageSizeOptions={[10]}
           pagination
           sx={{
+            cursor: "pointer",
             color: "white",
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "#333",
@@ -134,12 +145,31 @@ const GraphQLDataTable = ({ data }) => {
               {
                 color: "white",
               },
-          }}
-          slotProps={{
-            loadingOverlay: {
-              variant: "linear-progress",
-              noRowsVariant: "skeleton",
+            "&:hover": {
+              backgroundColor: "#1a1a1a",
             },
+          }}
+          loading={loading}
+          // slotProps={{
+          //   loadingOverlay: {
+          //     variant: "linear-progress",
+          //     noRowsVariant: "skeleton",
+          //   },
+          // }}
+          components={{
+            LoadingOverlay: () => (
+              <Box
+                sx={{
+                  height: "100%",
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Skeleton variant="rectangular" width="100%" height={50} />
+              </Box>
+            ),
           }}
         />
       </Box>
