@@ -69,7 +69,7 @@ export default function GraphQLFetcher() {
     <div>
       <h2>GraphQL Data Fetcher</h2>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
-      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      {data ? <GraphQLDataTable data={data || []} /> : <p>Loading...</p>}
     </div>
   );
 }
