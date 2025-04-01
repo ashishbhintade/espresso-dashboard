@@ -52,7 +52,6 @@ export default function GraphQLFetcher() {
         }
 
         const result = await response.json();
-        // console.log("Fetched Data:", result);
         if (result?.EVM?.Events && Array.isArray(result.EVM.Events)) {
           setData(result.EVM.Events);
         } else {
@@ -67,6 +66,8 @@ export default function GraphQLFetcher() {
 
     fetchData();
   }, []);
+
+  // console.log(data, "All data log");
 
   return (
     <div>

@@ -11,11 +11,6 @@ const GraphQLDataTable = ({ data, loading }) => {
   ];
 
   const extractData = (data) => {
-    // if (!data.EVM || !Array.isArray(data.EVM.Events)) {
-    //     console.error("Invalid data structure: Missing EVM or Events array");
-    //     return [];
-    // }
-
     const events = data;
     const transactionsMap = new Map();
     let idCounter = 1;
@@ -53,16 +48,13 @@ const GraphQLDataTable = ({ data, loading }) => {
         });
       }
 
-      // if (!rollupAddress || !chainId) {
-      //     return; // Skip if either rollupAddress or chainId is missing
-      // }
-
       if (!transactionsMap.has(txHash)) {
         transactionsMap.set(txHash, {
           id: idCounter++,
           blockTime,
           rollupAddress,
           chainId,
+          txHash,
         });
       } else {
         const existing = transactionsMap.get(txHash);
@@ -71,6 +63,7 @@ const GraphQLDataTable = ({ data, loading }) => {
           blockTime: existing.blockTime || blockTime,
           rollupAddress: existing.rollupAddress || rollupAddress,
           chainId: existing.chainId || chainId,
+          txhash: txHash,
         });
       }
     });
@@ -81,29 +74,15 @@ const GraphQLDataTable = ({ data, loading }) => {
   const router = useRouter();
 
   const handleRowClick = (params) => {
-    if (params.row.rollupAddress) {
-      router.push(`/rollupaddress/${params.row.rollupAddress}`);
+    if (params.row.txhash) {
+      router.push(`/txhash/${params.row.txhash}`);
     }
   };
 
   const rows = [...extractData(data)];
   rows.pop();
-  //   for (let i = 0; i < data.length; i += 2) {
-  //     const rollupEvent = data[i];
-  //     const chainEvent = data[i + 1] || {};
-  //     rows.push({
-  //       id: i / 2 + 1,
-  //       rollupAddress:
-  //         rollupEvent.Arguments.find((arg) => arg.Name === "rollupAddress")?.Value
-  //           ?.address || "N/A",
-  //       blockTime: rollupEvent.Block.Time || "N/A",
-  //       chainId:
-  //         chainEvent.Arguments?.find((arg) => arg.Name === "chainId")?.Value
-  //           ?.bigInteger || "N/A",
-  //     });
-  //   }
 
-  //   console.log(rows);
+  // console.log(rows);
 
   return (
     <div className="flex place-content-center">
