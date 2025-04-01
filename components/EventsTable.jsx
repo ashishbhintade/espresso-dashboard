@@ -113,6 +113,9 @@ const GraphQLDataTable = ({ data, loading }) => {
             },
             "& .MuiDataGrid-row": {
               backgroundColor: "white",
+              "&:hover": {
+                backgroundColor: "#f5f5f5", // Light gray on hover
+              },
             },
             "& .MuiDataGrid-overlay": {
               backgroundColor: "rgba(0, 0, 0, 0.3)",
@@ -122,33 +125,24 @@ const GraphQLDataTable = ({ data, loading }) => {
             },
             "& .MuiTablePagination-root, & .MuiTablePagination-caption, & .MuiTablePagination-selectIcon, & .MuiSvgIcon-root":
               {
-                color: "balck",
+                color: "black",
               },
             "&:hover": {
               backgroundColor: "rgba(0, 0, 0, 0.3)",
             },
+            "& .MuiDataGrid-footerContainer": {
+              backgroundColor: "white", // Ensures footer remains white
+              "&:hover": {
+                backgroundColor: "white", // Prevents hover color change
+              },
+            },
           }}
           loading={loading}
-          // slotProps={{
-          //   loadingOverlay: {
-          //     variant: "linear-progress",
-          //     noRowsVariant: "skeleton",
-          //   },
-          // }}
-          components={{
-            LoadingOverlay: () => (
-              <Box
-                sx={{
-                  height: "100%",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Skeleton variant="rectangular" width="100%" height={50} />
-              </Box>
-            ),
+          slotProps={{
+            loadingOverlay: {
+              variant: "linear-progress",
+              noRowsVariant: "skeleton",
+            },
           }}
         />
       </Box>

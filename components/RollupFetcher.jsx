@@ -3,15 +3,17 @@
 import { useState, useEffect } from "react";
 import RollupList from "@/components/RollupList";
 import TransferTable from "@/components/InboxTable";
-// import OutboxTable from "@/components/"
+import BalanceTable from "@/components/BalanceTable";
 
 export default function RollupFetcher(txhash) {
   const [rollupData, setRollupData] = useState(null);
   const [inboxData, setInboxData] = useState(null);
   const [outboxData, setOutboxData] = useState(null);
+  const [balanceData, setBalanceData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  //Get information about rollups
   useEffect(() => {
     if (!txhash) return;
 
@@ -66,6 +68,7 @@ export default function RollupFetcher(txhash) {
     // console.log(data, "Fetch console");
   }, [txhash]);
 
+  //Get information about bridge into rollup
   useEffect(() => {
     if (!rollupData) return;
 
@@ -129,6 +132,7 @@ export default function RollupFetcher(txhash) {
     fetchInboxData();
   }, [rollupData]);
 
+  //Get information about bridge out of rollup
   useEffect(() => {
     if (!rollupData) return;
 
@@ -181,7 +185,7 @@ export default function RollupFetcher(txhash) {
           Array.isArray(outboxResult.EVM.Transfers)
         ) {
           setOutboxData(outboxResult.EVM.Transfers);
-          console.log(inboxData);
+          // console.log(inboxData);
         } else {
           throw new Error("Invalid data structure");
         }
@@ -195,7 +199,63 @@ export default function RollupFetcher(txhash) {
     fetchOutboxData();
   }, [rollupData]);
 
-  //   console.log(inboxData, "Data from ROllupFetcher");
+  //Get information about balance of the rollup
+  useEffect(() => {
+    if (!rollupData) return;
+
+    const bridgeAddress = rollupData?.Arguments?.[8]?.Value?.address;
+    // console.log(inboxAddress);
+    if (!bridgeAddress) {
+      setError("Address not found in first query response");
+      return;
+    }
+
+    const fetchBalanceData = async () => {
+      try {
+        const BalanceQuery = `
+        {
+          EVM(network: arbitrum, dataset: combined) {
+            BalanceUpdates(
+              where: {BalanceUpdate: {Address: {is: "${bridgeAddress}"}}}
+            ) {
+              Currency {
+                Name
+              }
+              Native_Balance: sum(of: BalanceUpdate_Amount)
+            }
+          }
+        }        
+        `;
+        const balanceResponse = await fetch("/api/graphql", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: BalanceQuery }),
+        });
+
+        if (!balanceResponse.ok) {
+          throw new Error(`HTTP error! Status: ${balanceResponse.status}`);
+        }
+
+        const balanceResult = await balanceResponse.json();
+        if (
+          balanceResult?.EVM?.BalanceUpdates &&
+          Array.isArray(balanceResult.EVM.BalanceUpdates)
+        ) {
+          setBalanceData(balanceResult.EVM.BalanceUpdates);
+          console.log(balanceData);
+          console.log(bridgeAddress);
+        } else {
+          throw new Error("Invalid data structure");
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBalanceData();
+  }, [rollupData]);
 
   return (
     <div>
@@ -207,21 +267,29 @@ export default function RollupFetcher(txhash) {
           <p>Data is being loaded...</p>
         )}
       </div>
+      <div className="pt-12">
+        <p className="text-lg text-center">Balance Of The Bridge</p>
+        {balanceData ? (
+          <BalanceTable balanceData={balanceData || []} />
+        ) : (
+          <p className="text-center">No Balance Data</p>
+        )}
+      </div>
       <div className="py-12 grid grid-cols-2">
         <div className="w-full">
           <p className="text-lg text-center">All The Inbox Transactions</p>
           {inboxData ? (
-            <TransferTable inboxData={inboxData} />
+            <TransferTable inboxData={inboxData || {}} />
           ) : (
-            <p>No inbox data</p>
+            <p className="text-center">No inbox data</p>
           )}
         </div>
         <div>
           <p className="text-lg text-center">All the outbox transactions</p>
           {outboxData ? (
-            <TransferTable inboxData={inboxData} />
+            <TransferTable inboxData={inboxData || []} />
           ) : (
-            <p>No inbox data</p>
+            <p className="text-center">No inbox data</p>
           )}
         </div>
       </div>

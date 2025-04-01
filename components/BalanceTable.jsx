@@ -2,27 +2,20 @@ import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 
-const formatAddress = (address) => {
-  return `${address.slice(0, 5)}...${address.slice(-5)}`;
+const formatBalance = (balance) => {
+  return parseFloat(balance).toFixed(4);
 };
 
-const formatAmount = (amount) => {
-  return parseFloat(amount).toFixed(5);
-};
-
-const TransferTable = ({ inboxData }) => {
-  const rows = inboxData.map((item, index) => ({
+const BalanceTable = ({ balanceData }) => {
+  const rows = balanceData.map((item, index) => ({
     id: index + 1,
-    sender: formatAddress(item.Transfer.Sender),
-    receiver: formatAddress(item.Transfer.Receiver),
-    amount: formatAmount(item.Transfer.Amount),
+    currencyName: item.Currency.Name,
+    nativeBalance: formatBalance(item.Native_Balance),
   }));
 
-  // Columns configuration for the DataGrid
   const columns = [
-    { field: "sender", headerName: "Sender", width: 200 },
-    { field: "receiver", headerName: "Receiver", width: 150 },
-    { field: "amount", headerName: "Amount", width: 150 },
+    { field: "currencyName", headerName: "Currency Name", width: 250 },
+    { field: "nativeBalance", headerName: "Native Balance", width: 150 },
   ];
 
   return (
@@ -97,4 +90,4 @@ const TransferTable = ({ inboxData }) => {
   );
 };
 
-export default TransferTable;
+export default BalanceTable;
