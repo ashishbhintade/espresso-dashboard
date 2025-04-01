@@ -72,13 +72,14 @@ export default function GraphQLFetcher() {
   return (
     <div>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
-      {data ? (
-        <GraphQLDataTable data={data || []} />
+      {/* {data ? (
+        <GraphQLDataTable data={data || []} loading={loading} />
       ) : (
         <p className="flex place-content-center text-lg mt-28">
           Query may take some time
         </p>
-      )}
+      )} */}
+      <GraphQLDataTable data={data || []} loading={loading} />
     </div>
   );
 }

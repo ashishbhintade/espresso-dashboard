@@ -264,7 +264,7 @@ export default function RollupFetcher(txhash) {
         {rollupData ? (
           <RollupList data={rollupData || []} />
         ) : (
-          <p>Data is being loaded...</p>
+          <p className="text-center">Data is being loaded...</p>
         )}
       </div>
       <div className="pt-12">

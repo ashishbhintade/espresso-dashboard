@@ -1,6 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@mui/material";
 
 const GraphQLDataTable = ({ data, loading }) => {
   const columns = [
@@ -88,8 +89,38 @@ const GraphQLDataTable = ({ data, loading }) => {
     <div className="flex place-content-center">
       <Box sx={{ height: "500", width: { lg: "100%", xl: "70%" } }}>
         <DataGrid
-          rows={rows}
-          columns={columns}
+          rows={
+            loading
+              ? Array.from({ length: 10 }, (_, i) => ({
+                  id: i,
+                  placeholder: "Loading...",
+                }))
+              : rows
+          }
+          columns={columns.map((col) => ({
+            ...col,
+            renderCell: (params) =>
+              loading ? (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "100%", // Ensures it takes the full height of the cell
+                    width: "100%",
+                  }}
+                >
+                  <Skeleton
+                    width="60%"
+                    height={16}
+                    sx={{
+                      backgroundColor: "#e0e0e0",
+                    }}
+                  />
+                </div>
+              ) : (
+                params.value
+              ),
+          }))}
           onRowClick={handleRowClick}
           initialState={{
             pagination: {
@@ -137,13 +168,13 @@ const GraphQLDataTable = ({ data, loading }) => {
               },
             },
           }}
-          loading={loading}
-          slotProps={{
-            loadingOverlay: {
-              variant: "linear-progress",
-              noRowsVariant: "skeleton",
-            },
-          }}
+          loading={false}
+          // slotProps={{
+          //   loadingOverlay: {
+          //     variant: "linear-progress",
+          //     noRowsVariant: "skeleton",
+          //   },
+          // }}
         />
       </Box>
     </div>
