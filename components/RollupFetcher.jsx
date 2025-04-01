@@ -136,7 +136,7 @@ export default function RollupFetcher(txhash) {
   useEffect(() => {
     if (!rollupData) return;
 
-    const outboxAddress = rollupData?.Arguments?.[2]?.Value?.address;
+    const outboxAddress = rollupData?.Arguments?.[3]?.Value?.address;
     // console.log(inboxAddress);
     if (!outboxAddress) {
       setError("Address not found in first query response");
@@ -277,7 +277,7 @@ export default function RollupFetcher(txhash) {
       </div>
       <div className="py-12 grid grid-cols-2">
         <div className="w-full">
-          <p className="text-lg text-center">All The Inbox Transactions</p>
+          <p className="text-lg text-center">Bridge Into Rollup</p>
           {inboxData ? (
             <TransferTable inboxData={inboxData || {}} />
           ) : (
@@ -285,9 +285,9 @@ export default function RollupFetcher(txhash) {
           )}
         </div>
         <div>
-          <p className="text-lg text-center">All the outbox transactions</p>
+          <p className="text-lg text-center">Bridge Out Of Rollup</p>
           {outboxData ? (
-            <TransferTable inboxData={inboxData || []} />
+            <TransferTable inboxData={outboxData || []} />
           ) : (
             <p className="text-center">No inbox data</p>
           )}
