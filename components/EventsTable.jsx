@@ -109,10 +109,10 @@ const GraphQLDataTable = ({ data, loading }) => {
               color: "black",
             },
             "& .MuiDataGrid-cell": {
-              color: "white",
+              color: "black",
             },
             "& .MuiDataGrid-row": {
-              backgroundColor: "#0a0a0a",
+              backgroundColor: "white",
             },
             "& .MuiDataGrid-overlay": {
               backgroundColor: "rgba(0, 0, 0, 0.3)",
@@ -122,10 +122,10 @@ const GraphQLDataTable = ({ data, loading }) => {
             },
             "& .MuiTablePagination-root, & .MuiTablePagination-caption, & .MuiTablePagination-selectIcon, & .MuiSvgIcon-root":
               {
-                color: "white",
+                color: "balck",
               },
             "&:hover": {
-              backgroundColor: "#1a1a1a",
+              backgroundColor: "rgba(0, 0, 0, 0.3)",
             },
           }}
           loading={loading}

@@ -20,7 +20,7 @@ const TransferTable = ({ inboxData }) => {
 
   // Columns configuration for the DataGrid
   const columns = [
-    { field: "sender", headerName: "Sender", width: 150 },
+    { field: "sender", headerName: "Sender", width: 200 },
     { field: "receiver", headerName: "Receiver", width: 150 },
     { field: "amount", headerName: "Amount", width: 150 },
   ];
