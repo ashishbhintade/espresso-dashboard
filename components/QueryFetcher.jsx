@@ -12,8 +12,14 @@ export default function GraphQLFetcher() {
     query {
       EVM(dataset: combined, network: arbitrum) {
         Events(
-          where: {Log: {Signature: {Name: {in: ["RollupInitialized", "RollupCreated"]}}}}
-          orderBy: {descending: Block_Time}
+          where: {
+            Log: {
+              Signature: {
+                Name: { in: ["RollupInitialized", "RollupCreated"] }
+              }
+            }
+          }
+          orderBy: { descending: Block_Time }
         ) {
           Block {
             Time
